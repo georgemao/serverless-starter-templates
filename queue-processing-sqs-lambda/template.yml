@@ -1,0 +1,47 @@
+# This is the SAM template that represents the architecture of your serverless application
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-template-basics.html
+
+# The AWSTemplateFormatVersion identifies the capabilities of the template
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/format-version-structure.html
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  Configures a SQS Queue, Lambda function to process the Queue, and the eventsourcemapping to automatically poll the queue for records
+
+# Transform section specifies one or more macros that AWS CloudFormation uses to process your template
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-section-structure.html
+Transform:
+- AWS::Serverless-2016-10-31
+
+# Resources declares the AWS resources that you want to include in the stack
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
+Resources:
+  # Each Lambda function is defined by properties:
+  # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+
+  # This is a Lambda function config associated with the source code: src/handlers/index.js
+  helloFromLambdaFunction:
+    DependsOn: sqsQueue
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/index.handler
+      Runtime: nodejs14.x
+      MemorySize: 128
+      Timeout: 15 # This must be <= the Queue Visibiity timeout
+      Description: A function that processes Records from SQS
+      Policies:
+        # Give Lambda basic execution Permission to the helloFromLambda
+        - AWSLambdaBasicExecutionRole
+        - SQSPollerPolicy:
+            QueueName: !GetAtt sqsQueue.QueueName
+      Events:
+        SQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt sqsQueue.Arn
+            BatchSize: 10 # Without batch window enabled, the max is 10. 10000 with batch window. See: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-eventsourcemapping.html#cfn-lambda-eventsourcemapping-batchsize
+            Enabled: true
+            MaximumBatchingWindowInSeconds: 5
+            VisibilityTimeout: 10 # This is optional and defaulted to 30 if not specified
+  
+  sqsQueue:
+    Type: AWS::SQS::Queue
