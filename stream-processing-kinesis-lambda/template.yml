@@ -5,7 +5,7 @@
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/format-version-structure.html
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
-  queue-processing-sqs-lambda
+  Configures a Kinesis Stream, Lambda function to process the Stream, and the eventsourcemapping to automatically poll the queue for records
 
 # Transform section specifies one or more macros that AWS CloudFormation uses to process your template
 # https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-section-structure.html
@@ -18,26 +18,34 @@ Resources:
   # Each Lambda function is defined by properties:
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
 
-  # This is a Lambda function config associated with the source code: hello-from-lambda.js
-  helloFromLambdaFunction:
+  # This is a Lambda function config associated with the source code: src/handlers/index.js
+  kinesisProcessorFunction:
+    DependsOn: kinesisStream
     Type: AWS::Serverless::Function
     Properties:
       Handler: src/handlers/index.handler
       Runtime: nodejs14.x
       MemorySize: 128
-      Timeout: 100
-      Description: A Lambda function that returns a static string.
+      Timeout: 15 # This must be <= the Queue Visibiity timeout
+      Description: A function that processes Records from Kinesis
       Policies:
         # Give Lambda basic execution Permission to the helloFromLambda
         - AWSLambdaBasicExecutionRole
+        # See Policy templates: https://github.com/aws/serverless-application-model/blob/develop/tests/translator/input/all_policy_templates.yaml
+        - KinesisStreamReadPolicy:
+            StreamName: !Ref kinesisStream
       Events:
-        SQSEvent:
-          Type: SQS
+        # https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-property-function-kinesis.html
+        KinesisEvent:
+          Type: Kinesis
           Properties:
-            Queue: !Ref sqsQueue.Arn
+            Stream: !GetAtt kinesisStream.Arn
+            StartingPosition: TRIM_HORIZON
             BatchSize: 10
-            Enabled: false
+            Enabled: true
+            BisectBatchOnFunctionError: true # Do not enable if order is a requirement. Bisect will not preserve order. Instead use Checkpointing.
   
-  sqsQueue:
-    Type: AWS::SQS::Queue
-    Properties: 
+  kinesisStream:
+    Type: AWS::Kinesis::Stream
+    Properties:
+      ShardCount: 2
