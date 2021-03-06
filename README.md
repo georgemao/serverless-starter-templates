@@ -1,6 +1,9 @@
 # serverless-starter-templates
 A collection of starter examples for common serverless use cases
 
+[Queue Processing](https://github.com/georgmao/serverless-starter-templates/tree/main/queue-processing-sqs-lambda)
+[Stream Processing](https://github.com/georgmao/serverless-starter-templates/tree/main/queue-processing-kinesis-lambda)
+
 
 ## Serverless Application Model
 All projects include a SAM template you can use to deploy the application.
