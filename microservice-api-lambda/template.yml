@@ -1,0 +1,67 @@
+# This is the SAM template that represents the architecture of your serverless application
+# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-template-basics.html
+
+# The AWSTemplateFormatVersion identifies the capabilities of the template
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/format-version-structure.html
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  Configures a Microservice using API Gateway as a front door for requests. Forwards requests for processing by Lambda.
+
+# Transform section specifies one or more macros that AWS CloudFormation uses to process your template
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-section-structure.html
+Transform:
+- AWS::Serverless-2016-10-31
+
+# Resources declares the AWS resources that you want to include in the stack
+# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
+Resources:
+  # Each Lambda function is defined by properties:
+  # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+
+  # This is a Lambda function config associated with the source code: src/handlers/index.js
+  apiFunction:
+    DependsOn: ap
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/index.handler
+      Runtime: nodejs14.x
+      MemorySize: 128
+      Timeout: 15 # This must be <= the Queue Visibiity timeout
+      Description: A function that processes requests from API GW HTTP API
+      Policies:
+        # Give Lambda basic execution Permission to the helloFromLambda
+        - AWSLambdaBasicExecutionRole
+        # See Policy templates: https://github.com/aws/serverless-application-model/blob/develop/tests/translator/input/all_policy_templates.yam
+      Events:
+        helloEvent:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: GET
+            Path: /hello
+            # See Payload spec: https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html
+            PayloadFormatVersion: "2.0"
+            RouteSettings:
+              ThrottlingBurstLimit: 1
+        postEvent:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: POST
+            Path: /post
+            # See Payload spec: https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html
+            PayloadFormatVersion: "2.0"
+            RouteSettings:
+              ThrottlingBurstLimit: 1
+        
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      DefaultRouteSettings:
+        ThrottlingBurstLimit: 5
+      RouteSettings:
+        "GET /hello":
+          ThrottlingBurstLimit: 3 # overridden in HttpApi Event
+        "POST /post":
+          ThrottlingBurstLimit: 3 # overridden in HttpApi Event
+

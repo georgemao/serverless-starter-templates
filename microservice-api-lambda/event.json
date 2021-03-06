@@ -1,0 +1,41 @@
+{
+	"version": "2.0",
+	"routeKey": "GET /path",
+	"rawPath": "/path",
+	"rawQueryString": "",
+	"cookies": [],
+	"headers": {
+		"Host": "127.0.0.1:3000",
+		"Connection": "keep-alive",
+		"Upgrade-Insecure-Requests": "1",
+		"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.192 Safari/537.36",
+		"Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+		"Sec-Fetch-Site": "none",
+		"Sec-Fetch-Mode": "navigate",
+		"Sec-Fetch-User": "?1",
+		"Sec-Fetch-Dest": "document",
+		"Accept-Encoding": "gzip, deflate, br",
+		"Accept-Language": "en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7,fr;q=0.6,zh-TW;q=0.5",
+		"X-Forwarded-Proto": "http",
+		"X-Forwarded-Port": "3000"
+	},
+	"queryStringParameters": {},
+	"requestContext": {
+		"accountId": "123456789012",
+		"apiId": "1234567890",
+		"http": {
+			"method": "GET",
+			"path": "/path",
+			"protocol": "HTTP/1.1",
+			"sourceIp": "127.0.0.1",
+			"userAgent": "Custom User Agent String"
+		},
+		"requestId": "748bce70-34fd-4441-b78d-7f330ba1d926",
+		"routeKey": "GET /path",
+		"stage": null
+	},
+	"body": "",
+	"pathParameters": {},
+	"stageVariables": null,
+	"isBase64Encoded": false
+}
