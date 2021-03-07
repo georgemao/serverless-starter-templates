@@ -2,7 +2,7 @@
 A collection of starter examples for common serverless use cases
 
 * [Queue Processing](queue-processing-sqs-lambda)
-* [Stream Processing](kinesis-processing-lambda)
+* [Stream Processing](stream-processing-lambda)
 * [Microservice](microservice-api-lambda)
 
 
