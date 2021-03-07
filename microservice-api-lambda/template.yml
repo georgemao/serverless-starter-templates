@@ -79,6 +79,7 @@ Resources:
   HttpApi:
     Type: AWS::Serverless::HttpApi
     Properties:
+      # `StageName` is optional and not specified in this example. A default stage at the api root will be deployed.
       DefaultRouteSettings:
         ThrottlingBurstLimit: 5
       RouteSettings:
