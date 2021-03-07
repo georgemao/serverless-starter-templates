@@ -16,11 +16,14 @@ You can Invoke the function locally, passing it the sample payload:
 Or to deploy the API and host it locally for integration testing:
 * sam local start-api
 
-There are 3 paths defined: */hello* ,  */post* , and /hello2.  /hello expects a HTTP GET ,  /post expects a HTTP POST with body, and /hello2
+There are 3 paths defined: `*/hello*` ,  `*/post*` , and `/secure/hello`.
+`/hello` expects a HTTP GET and  `/post` expects a HTTP POST with body. These routes are implemented by the same Lambda function. The function checks the request payload for the `httpMethod` and responds accordingly.
 
-- To hit the predefined /hello path, submit a GET request to: http://127.0.0.1/hello
-- To hit the predefined /post path, submit a POST request to: http://127.0.0.1/post
-- To hit the predefined /secure/hello path, submit a POST request to: http://127.0.0.1/secure/hello
+`/secure/hello` expects a HTTP GET. This route is implemented by a second Lambda function. You should use this design pattern when you have different security permissions that require you implement seperate functions.
+
+- To hit the predefined `/hello` path, submit a GET request to: http://127.0.0.1/hello
+- To hit the predefined `/post` path, submit a POST request to: http://127.0.0.1/post
+- To hit the predefined `/secure/hello` path, submit a POST request to: http://127.0.0.1/secure/hello
 
 You may need to use a development port such as 3000. ie http://127.0.0.1:3000/
 
