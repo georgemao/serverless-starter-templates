@@ -2,9 +2,16 @@
 A collection of starter examples for common serverless use cases
 
 * [Queue Processing](queue-processing-sqs-lambda)
-* [Stream Processing](stream-processing-kinesis-lambda)
-* [Microservice](microservice-api-lambda)
+This template deploys a SQS resource and a Lambda function to process the records in SQS. 
+It enables the event source for SQS --> Lambda and enables polling on your behalf.
 
+* [Stream Processing](stream-processing-kinesis-lambda)
+This template deploys a Kinesis stream and a Lambda function to process the records in Kinesis. 
+It enables the event source for Kinesis --> Lambda and enables polling on your behalf.
+
+* [Microservice](microservice-api-lambda)
+This template deploys a HTTP API endpoint and 2 Lambda functions to process API requests forwarded from API Gateway.
+It uses two functions to demostrate seperation of logic and security.
 
 ## Serverless Application Model
 All projects include a SAM template you can use to deploy the application.
