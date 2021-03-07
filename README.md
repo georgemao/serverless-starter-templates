@@ -3,6 +3,7 @@ A collection of starter examples for common serverless use cases
 
 * [Queue Processing](https://github.com/georgmao/serverless-starter-templates/tree/main/queue-processing-sqs-lambda)
 * [Stream Processing](https://github.com/georgmao/serverless-starter-templates/tree/main/queue-processing-kinesis-lambda)
+* [Microservice](./queue-processing-kinesis-lambda)
 
 
 ## Serverless Application Model
