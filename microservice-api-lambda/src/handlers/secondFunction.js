@@ -14,7 +14,7 @@ exports.handler = async (event, context) => {
 
     var httpMethod =  requestContext.http.method;
     if(httpMethod == "GET")
-        return (`Hello you are using: ${userAgent} from IP ${clientIp}`);
+        return (`SECURE: Hello you are using: ${userAgent} from IP ${clientIp}`);
     else if(httpMethod == "POST"){
         return (`You POSTED this:  ${event.body}`);
     }
